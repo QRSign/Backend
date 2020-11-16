@@ -1,3 +1,5 @@
+import secrets
+
 from flask import Flask, render_template
 import qrcode
 
@@ -5,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello World!'
+    return secrets.token_urlsafe()
 
 @app.route('/qrcode')
 def hello():
@@ -20,6 +22,7 @@ def hello():
     img = qr.make_image(fill_color="black", back_color="white")
     img.save('./static/qrcode.png')
     return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run()
