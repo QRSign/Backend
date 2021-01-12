@@ -15,13 +15,17 @@ def get_password(json, session):
     mail = json['mail']
     password = json['password']
     enc_password = session.query(User.password).filter(User.mail == mail).first()
+    first_name = session.query(User.first_name).filter(User.first_name == mail).first()
+    last_name = session.query(User.last_name).filter(User.mail == mail).first()
+
+    user = User(first_name, last_name, mail, password)
 
     if not enc_password:
-        return {'login': "Wrong mail"}
+        return {'login': "Wrong credential"}, 400
     elif check_password(password, enc_password[0]):
-        return {'login': True}
+        return user.serialize, 200
     else:
-        return {'login': "Wrong Password"}
+        return {'login': "Wrong credential"}, 400
 
 
 def add_user(json, session):
@@ -31,12 +35,12 @@ def add_user(json, session):
     password = json['password']
     mail_check = session.query(User.mail).filter(User.mail == mail).first()
     if mail_check:
-        return {'register': "user already exist"}
+        return {'register': "user already exist"}, 400
 
     session.add(User(first_name, last_name, mail, password))
     session.commit()
 
-    return {'register': "successful"}
+    return {'register': "successful"}, 200
 
 
 class User(Entity, Base):
@@ -60,3 +64,12 @@ class User(Entity, Base):
         salt = uuid.uuid4().hex
         key = hashlib.sha256(salt.encode() + raw_password.encode()).hexdigest()
         self.password = '%s$%s' % (salt, key)
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'mail': self.mail
+        }
