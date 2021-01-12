@@ -15,6 +15,13 @@ app = Flask(__name__)
 session = Session()
 Base.metadata.create_all(engine)
 
+connection = 'connection'
+
+# Setup the Flask-JWT-Extended extension
+app.config['JWT_SECRET_KEY'] = 'A_CHANGER'  # Créer une variable d'environnement
+jwt = JWTManager(app)
+
+access_token = create_access_token(identity=connection)
 
 @app.route('/login', methods=['POST'])
 def login():
