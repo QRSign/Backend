@@ -7,7 +7,7 @@ from flask_jwt_extended import (
 
 app = Flask(__name__)
 
-app.config['JWT_SECRET_KEY'] = 'super-secret'  # A modifier
+app.config['JWT_SECRET_KEY'] = 'aduzhdjaudhazhdaiuzdiauhdiazuha' # Mettre une variable d'env
 jwt = JWTManager(app)
 
 @app.route('/')
