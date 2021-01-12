@@ -14,11 +14,11 @@ def check_password(raw_password, enc_password):
 def get_password(json, session):
     mail = json['mail']
     password = json['password']
-    enc_password = session.query(User.password).filter(User.mail == mail).first()[0]
+    enc_password = session.query(User.password).filter(User.mail == mail).first()
 
-    if enc_password == "":
+    if not enc_password:
         return {'login': "Wrong mail"}
-    elif check_password(password, enc_password):
+    elif check_password(password, enc_password[0]):
         return {'login': True}
     else:
         return {'login': "Wrong Password"}
@@ -29,9 +29,8 @@ def add_user(json, session):
     first_name = json['first_name']
     mail = json['mail']
     password = json['password']
-    mail_check = session.query(User.mail).filter(User.mail == mail).first()[0]
-
-    if mail_check != "":
+    mail_check = session.query(User.mail).filter(User.mail == mail).first()
+    if mail_check:
         return {'register': "user already exist"}
 
     session.add(User(first_name, last_name, mail, password))
