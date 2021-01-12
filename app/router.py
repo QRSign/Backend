@@ -1,4 +1,9 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
+from .dao.entities.entity import Session, engine, Base
+from .dao.entities.qrcode import Qrcode, qrcode_get_method, qrcode_post_method, qrcode_patch_method, \
+    qrcode_delete_method
+from .dao.entities.user import get_password, add_user
+from datetime import datetime
 
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
@@ -7,17 +12,13 @@ from flask_jwt_extended import (
 
 app = Flask(__name__)
 
-app.config['JWT_SECRET_KEY'] = 'aduzhdjaudhazhdaiuzdiauhdiazuha' # Mettre une variable d'env
-jwt = JWTManager(app)
+session = Session()
+Base.metadata.create_all(engine)
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
 
 @app.route('/login', methods=['POST'])
 def login():
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
+    return get_password(request.get_json(), session)
 
     username = request.json.get('username', None)
     password = request.json.get('password', None)
@@ -26,25 +27,26 @@ def login():
     if not password:
         return jsonify({"msg": "Missing password parameter"}), 400
 
-    if username != 'test' or password != 'test':
-        return jsonify({"msg": "Bad username or password"}), 401
-
-    # Identity can be any data that is json serializable
-    access_token = create_access_token(identity=username)
-    return jsonify(access_token=access_token), 200
+@app.route('/register', methods=['POST'])
+def register():
+    return add_user(request.get_json(), session)
 
 
-# Protect a view with jwt_required, which requires a valid access token
-# in the request to access.
-@app.route('/protected', methods=['GET'])
-@jwt_required
-def protected():
-    # Access the identity of the current user with get_jwt_identity
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
+@app.route('/qrcode/<id>', methods=['GET'])
+def get_qrcode_by_id(id):
+    return qrcode_get_method(request.get_json(), session)
 
 
+@app.route('/qrcode', methods=['POST'])
+def create_qrcode():
+    return qrcode_post_method(request.json, session)
 
 
-"""if __name__ == '__main__':
-    app.run()"""
+@app.route('/qrcode/<id>', methods=['PATCH'])
+def update_qrcode_by_id(id):
+    return qrcode_patch_method(request.get_json(), session, id)
+
+
+@app.route('/qrcode/<id>', methods=['DELETE'])
+def delete_qrcode_by_id(id):
+    return qrcode_delete_method(session, id)
