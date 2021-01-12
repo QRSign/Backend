@@ -19,7 +19,7 @@ def get_password(json, session):
     if not enc_password:
         return {'login': "Wrong mail"}
     elif check_password(password, enc_password[0]):
-        return {'login': True}
+        return {'login': True},
     else:
         return {'login': "Wrong Password"}
 

@@ -23,7 +23,7 @@ def register():
 
 @app.route('/qrcode/<id>', methods=['GET'])
 def get_qrcode_by_id(id):
-    return qrcode_get_method(request.get_json(), session)
+    return qrcode_get_method(session, id)
 
 
 @app.route('/qrcode', methods=['POST'])
