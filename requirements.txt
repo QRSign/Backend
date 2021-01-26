@@ -1,5 +1,5 @@
 # Everything needed in production
 
 Flask
-SQLAlchemy
-psycopg2
+Flask-SQLAlchemy
+psycopg2-binary
