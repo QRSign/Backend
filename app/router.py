@@ -44,3 +44,4 @@ def delete_qrcode_by_id(id):
 @app.route('/test')
 def test():
     return 'test ok'
+
