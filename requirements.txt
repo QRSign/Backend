@@ -1,0 +1,6 @@
+# Everything needed in production
+
+Flask
+SQLAlchemy
+hashlib
+secrets
