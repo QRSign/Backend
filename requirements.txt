@@ -1,7 +1,6 @@
 # Everything needed in production
 
 Flask
-psycopg2
 SQLAlchemy
+psycopg2
 pyOpenSSL
-secrets
