@@ -2,5 +2,5 @@
 
 Flask
 SQLAlchemy
-hashlib
 secrets
+pytest
