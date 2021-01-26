@@ -39,3 +39,8 @@ def update_qrcode_by_id(id):
 @app.route('/qrcode/<id>', methods=['DELETE'])
 def delete_qrcode_by_id(id):
     return qrcode_delete_method(session, id)
+
+
+@app.route('test')
+def test():
+    return 'test ok'
