@@ -41,6 +41,6 @@ def delete_qrcode_by_id(id):
     return qrcode_delete_method(session, id)
 
 
-@app.route('test')
+@app.route('/test')
 def test():
     return 'test ok'
