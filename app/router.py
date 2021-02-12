@@ -4,7 +4,7 @@ from .dao.entities.qrcode import qrcode_get_method, qrcode_post_method, qrcode_p
     qrcode_delete_method
 from .dao.entities.signature import signature_get_method, signature_post_method, signature_patch_method, \
     signature_delete_method, get_signature_by_token
-from .dao.entities.user import get_password, add_user
+from .dao.entities.catho_user import get_password, add_user
 from flask_cors import CORS
 
 app = Flask(__name__)

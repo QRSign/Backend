@@ -8,7 +8,7 @@ from .entity import Entity, Base
 def qrcode_get_method(session, id):
     qrcode = session.query(Qrcode).filter(Qrcode.id == id).first()
     if not qrcode:
-        return {'message': "User not found."}, 404
+        return {'message': "CathoUser not found."}, 404
 
     return jsonify(qrcode.serialize), 200
 
@@ -36,7 +36,7 @@ def qrcode_patch_method(json, session, id):
     qrcode = session.query(Qrcode).get(id)
 
     if not qrcode:
-        return {'message': "User not found."}, 404
+        return {'message': "CathoUser not found."}, 404
 
     qrcode.title = title
     qrcode.user = user

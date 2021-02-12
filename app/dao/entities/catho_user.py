@@ -15,7 +15,7 @@ def check_password(raw_password, enc_password):
 def get_password(json, session):
     mail = json['mail']
     password = json['password']
-    user = session.query(User).filter(User.mail == mail).all()[0]
+    user = session.query(CathoUser).filter(CathoUser.mail == mail).all()[0]
 
     print(check_password(password, user.password))
 
@@ -30,11 +30,11 @@ def add_user(json, session):
     first_name = json['first_name']
     mail = json['mail']
     password = json['password']
-    mail_check = session.query(User.mail).filter(User.mail == mail).first()
+    mail_check = session.query(CathoUser.mail).filter(CathoUser.mail == mail).first()
     if mail_check:
-        return {'message': "User already exist"}, 400
+        return {'message': "CathoUser already exist"}, 400
 
-    user = User(first_name, last_name, mail, password)
+    user = CathoUser(first_name, last_name, mail, password)
 
     session.add(user)
     session.commit()
@@ -42,8 +42,8 @@ def add_user(json, session):
     return jsonify(user.serialize), 200
 
 
-class User(Entity, Base):
-    __tablename__ = 'user'
+class CathoUser(Entity, Base):
+    __tablename__ = 'catho_user'
 
     first_name = Column(String)
     last_name = Column(String)
