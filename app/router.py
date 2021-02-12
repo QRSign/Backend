@@ -1,9 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from .dao.entities.entity import Session, engine, Base
-from .dao.entities.qrcode import Qrcode, qrcode_get_method, qrcode_post_method, qrcode_patch_method, \
+from .dao.entities.qrcode import qrcode_get_method, qrcode_post_method, qrcode_patch_method, \
     qrcode_delete_method
+from .dao.entities.signatue import signature_get_method, signature_post_method, signature_patch_method, \
+    signature_delete_method
 from .dao.entities.user import get_password, add_user
-from datetime import datetime
 
 app = Flask(__name__)
 
@@ -39,3 +40,28 @@ def update_qrcode_by_id(id):
 @app.route('/qrcode/<id>', methods=['DELETE'])
 def delete_qrcode_by_id(id):
     return qrcode_delete_method(session, id)
+
+
+@app.route('/signature/<id>', methods=['GET'])
+def get_signature_by_id(id):
+    return signature_get_method(request.get_json(), session)
+
+
+@app.route('/signature', methods=['POST'])
+def create_signature():
+    return signature_post_method(request.json, session)
+
+
+@app.route('/signature/<id>', methods=['PATCH'])
+def update_signature_by_id(id):
+    return signature_patch_method(request.get_json(), session, id)
+
+
+@app.route('/signature/<id>', methods=['DELETE'])
+def delete_signature_by_id(id):
+    return signature_delete_method(session, id)
+
+
+@app.route('/signature/qrcode/<token>', methods=[''])
+def get_signature_by_token(token):
+    return get_signature_by_token(session, token)
