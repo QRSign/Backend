@@ -5,8 +5,10 @@ from .dao.entities.qrcode import qrcode_get_method, qrcode_post_method, qrcode_p
 from .dao.entities.signatue import signature_get_method, signature_post_method, signature_patch_method, \
     signature_delete_method
 from .dao.entities.user import get_password, add_user
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 session = Session()
 Base.metadata.create_all(engine)
