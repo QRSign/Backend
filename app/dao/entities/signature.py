@@ -4,8 +4,8 @@ from .entity import Entity, Base
 
 
 def signature_get_method(session, id):
-    spot = session.query(Signature).filter(Signature.id == id).first()
-    return jsonify(spot.serialize)
+    qrcode = session.query(Signature).filter(Signature.id == id).first()
+    return jsonify(qrcode.serialize)
 
 
 def signature_post_method(json, session):
@@ -40,16 +40,16 @@ def signature_patch_method(json, session, id):
 
 
 def signature_delete_method(session, id):
-    spot = session.query(Signature).get(id)
-    session.delete(spot)
+    signature = session.query(Signature).get(id)
+    session.delete(signature)
 
-    return jsonify(spot.serialize)
+    return jsonify(signature.serialize)
 
 
 def get_signature_by_token(session, token):
     signature = session.query(Signature).get(token)
 
-    return signature
+    return jsonify(signature.serialize)
 
 
 class Signature(Entity, Base):

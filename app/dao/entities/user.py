@@ -1,3 +1,4 @@
+from flask import jsonify
 from sqlalchemy import Column, String, Integer
 from .entity import Entity, Base
 import hashlib
@@ -14,16 +15,14 @@ def check_password(raw_password, enc_password):
 def get_password(json, session):
     mail = json['mail']
     password = json['password']
-    enc_password = session.query(User.password).filter(User.mail == mail).first()
-    first_name = session.query(User.first_name).filter(User.first_name == mail).first()
-    last_name = session.query(User.last_name).filter(User.mail == mail).first()
+    user = session.query(User).filter(User.mail == mail).all()[0]
 
-    user = User(first_name, last_name, mail, password)
+    print(check_password(password, user.password))
 
-    if not enc_password:
-        return {'login': "Wrong credential"}, 400
-    elif check_password(password, enc_password[0]):
-        return user.serialize, 200
+    if not user or not check_password(password, user.password):
+        return {'message': "Wrong credential"}, 400
+    elif check_password(password, user.password):
+        return jsonify(user.serialize), 200
 
 
 def add_user(json, session):
@@ -33,12 +32,14 @@ def add_user(json, session):
     password = json['password']
     mail_check = session.query(User.mail).filter(User.mail == mail).first()
     if mail_check:
-        return {'register': "user already exist"}, 400
+        return {'message': "User already exist"}, 400
 
-    session.add(User(first_name, last_name, mail, password))
+    user = User(first_name, last_name, mail, password)
+
+    session.add(user)
     session.commit()
 
-    return {'register': "successful"}, 200
+    return jsonify(user.serialize), 200
 
 
 class User(Entity, Base):
