@@ -24,8 +24,6 @@ def get_password(json, session):
         return {'login': "Wrong credential"}, 400
     elif check_password(password, enc_password[0]):
         return user.serialize, 200
-    else:
-        return {'login': "Wrong credential"}, 400
 
 
 def add_user(json, session):

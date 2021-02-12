@@ -6,8 +6,11 @@ from .entity import Entity, Base
 
 
 def qrcode_get_method(session, id):
-    spot = session.query(Qrcode).filter(Qrcode.id == id).first()
-    return jsonify(spot.serialize)
+    qrcode = session.query(Qrcode).filter(Qrcode.id == id).first()
+    if not qrcode:
+        return {'message': "User not found."}, 404
+
+    return jsonify(qrcode.serialize), 200
 
 
 def qrcode_post_method(json, session):
@@ -21,7 +24,7 @@ def qrcode_post_method(json, session):
 
     session.add(qrcode)
     session.commit()
-    return jsonify(qrcode.serialize)
+    return jsonify(qrcode.serialize), 201
 
 
 def qrcode_patch_method(json, session, id):
@@ -32,6 +35,9 @@ def qrcode_patch_method(json, session, id):
 
     qrcode = session.query(Qrcode).get(id)
 
+    if not qrcode:
+        return {'message': "User not found."}, 404
+
     qrcode.title = title
     qrcode.user = user
     qrcode.start_time = start_time
@@ -39,7 +45,7 @@ def qrcode_patch_method(json, session, id):
 
     session.commit()
 
-    return jsonify(qrcode.serialize)
+    return jsonify(qrcode.serialize), 200
 
 
 def qrcode_delete_method(session, id):
@@ -53,7 +59,7 @@ class Qrcode(Entity, Base):
     __tablename__ = 'qrcode'
 
     title = Column(String)
-    token = Column(String)
+    token = Column(String, unique=True)
     created_by = Column(Integer, ForeignKey('user.id'))
     start_time = Column(DateTime)
     end_time = Column(DateTime)
