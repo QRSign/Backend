@@ -2,6 +2,7 @@ from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from app.app.router import app
 
 db_url = 'localhost:5432'
 db_name = 'qrsign'
