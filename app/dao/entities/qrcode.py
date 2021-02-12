@@ -59,7 +59,7 @@ class Qrcode(Entity, Base):
     __tablename__ = 'qrcode'
 
     title = Column(String)
-    token = Column(String, unique=True)
+    token = Column(String, unique=True, nullable=False)
     created_by = Column(Integer, ForeignKey('user.id'))
     start_time = Column(DateTime)
     end_time = Column(DateTime)

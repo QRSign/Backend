@@ -1,5 +1,6 @@
 from flask import jsonify
 from sqlalchemy import Column, String, ForeignKey, LargeBinary
+
 from .entity import Entity, Base
 
 
@@ -11,7 +12,7 @@ def signature_get_method(session, id):
 def signature_post_method(json, session):
     nom = json['nom']
     prenom = json['prenom']
-    sign = json['signature']
+    sign = json['signature'].encode()
     token = json['token']
 
     signature = Signature(nom, prenom, sign, token)
@@ -24,7 +25,7 @@ def signature_post_method(json, session):
 def signature_patch_method(json, session, id):
     nom = json['nom']
     prenom = json['prenom']
-    sign = json['signature']
+    sign = json['signature'].encode()
     token = json['token']
 
     signature = session.query(Signature).get(id)
@@ -47,9 +48,9 @@ def signature_delete_method(session, id):
 
 
 def get_signature_by_token(session, token):
-    signature = session.query(Signature).get(token)
+    signatures = session.query(Signature).filter(Signature.token == token).all()
 
-    return jsonify(signature.serialize)
+    return jsonify([x.serialize for x in signatures])
 
 
 class Signature(Entity, Base):
@@ -58,7 +59,7 @@ class Signature(Entity, Base):
     nom = Column(String)
     prenom = Column(String)
     signature = Column(LargeBinary)
-    token = Column(String, ForeignKey('qrcode.token'))
+    token = Column(String, ForeignKey('qrcode.token'), nullable=False)
 
     def __init__(self, nom, prenom, signature, token):
         Entity.__init__(self)
@@ -73,6 +74,6 @@ class Signature(Entity, Base):
             'id': self.id,
             'nom': self.nom,
             'prenom': self.prenom,
-            'signature': self.signature,
+            'signature': self.signature.decode(),
             'token': self.token
         }
