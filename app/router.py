@@ -4,8 +4,10 @@ from .dao.entities.qrcode import Qrcode, qrcode_get_method, qrcode_post_method, 
     qrcode_delete_method
 from .dao.entities.user import get_password, add_user
 from datetime import datetime
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 session = Session()
 Base.metadata.create_all(engine)
