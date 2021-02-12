@@ -14,6 +14,10 @@ session = Session()
 Base.metadata.create_all(engine)
 
 
+@app.route('/test')
+def test_route():
+    return 'test route ok'
+
 @app.route('/login', methods=['POST'])
 def login():
     return get_password(request.get_json(), session)
