@@ -2,6 +2,8 @@ from flask import jsonify
 from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
 import secrets
 from datetime import datetime
+
+from .catho_user import CathoUser
 from .entity import Entity, Base
 
 
@@ -32,11 +34,24 @@ def qrcode_get_method_by_token(session, token):
 def qrcode_post_method(json, session):
     title = json['title']
     token = secrets.token_hex(4)
-    user = json['user']
-    start_time = datetime.strptime(json['start_time'], "%Y-%m-%d %H:%M")
-    end_time = datetime.strptime(json['end_time'], "%Y-%m-%d %H:%M")
+    user_id = json['user']
 
-    qrcode = Qrcode(title, token, user, start_time, end_time)
+    if type(user_id) != int:
+        return {'message': 'Id is not an integer'}, 400
+
+    try:
+        start_time = datetime.strptime(json['start_time'], "%Y-%m-%d %H:%M")
+        end_time = datetime.strptime(json['end_time'], "%Y-%m-%d %H:%M")
+    except Exception as e:
+        print(e)
+        return {'message': 'Wrong date format'}, 400
+
+    user = session.query(CathoUser).get(user_id)
+
+    if not user:
+        return {'message': 'User not found.'}, 404
+
+    qrcode = Qrcode(title, token, user_id, start_time, end_time)
 
     session.add(qrcode)
     session.commit()
