@@ -8,16 +8,18 @@
         <link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='list.css') }}">
 </head>
 <body>
+<h1> Liste de présence </h1>
+<br>
 <div class="container">
     <table>
 
         <tr>
-          <th><strong>Cours:</strong>{{ course.title }} </th>
-          <th><strong>Date:</strong>{{ course.start_time }} </th>
+          <th><strong>Cours :  </strong>{{ course.title }} </th>
+          <th><strong>Date début :  </strong>{{ course.start_time }} </th>
         </tr>
         <tr>
-            <th><strong>Professeur:</strong>{{ user.first_name + " " + user.last_name  }}  </th>
-            <th><strong></strong>{{ course.end_time }} </th>
+            <th><strong>Professeur :  </strong>{{ user.first_name + " " + user.last_name  }}  </th>
+            <th><strong>Date fin :  </strong>{{ course.end_time }} </th>
           </tr>
 
        </table>
@@ -26,8 +28,8 @@
 <div class="container">
     <table>
   <tr>
-    <th>Prénom et Nom</th>
-    <th>Signature</th>
+    <th class="pos">Prénom et Nom</th>
+    <th class="pos">Signature</th>
   </tr>
 
   <tr>
