@@ -12,6 +12,14 @@ def check_password(raw_password, enc_password):
     return key == new_key
 
 
+def get_users_method(json, session):
+    users = session.query(CathoUser).all()
+    if not users:
+        return {'message': "Users not found."}, 404
+    else:
+        return jsonify([x.serialize for x in users]), 200
+
+
 def get_password(json, session):
     mail = json['mail']
     password = json['password']

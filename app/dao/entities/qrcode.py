@@ -1,16 +1,32 @@
-from flask import Flask, request, jsonify
+from flask import jsonify
 from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
 import secrets
 from datetime import datetime
 from .entity import Entity, Base
 
 
+def qrcodes_get_method(session):
+    qrcodes = session.query(Qrcode).all()
+    if not qrcodes:
+        return {'message': "QrCode not found."}, 404
+    else:
+        return jsonify([x.serialize for x in qrcodes]), 200
+
+
 def qrcode_get_method(session, id):
     qrcode = session.query(Qrcode).filter(Qrcode.id == id).first()
     if not qrcode:
-        return {'message': "CathoUser not found."}, 404
+        return {'message': "QrCode not found."}, 404
 
     return jsonify(qrcode.serialize), 200
+
+
+def qrcode_get_method_by_token(session, token):
+    signatures = session.query(Qrcode).filter(Qrcode.token == token).all()
+    if not signatures:
+        return {'message': "Unknown token"}, 400
+    else:
+        return jsonify(signatures[0].serialize), 200
 
 
 def qrcode_post_method(json, session):
@@ -36,7 +52,7 @@ def qrcode_patch_method(json, session, id):
     qrcode = session.query(Qrcode).get(id)
 
     if not qrcode:
-        return {'message': "CathoUser not found."}, 404
+        return {'message': "QrCode not found."}, 404
 
     qrcode.title = title
     qrcode.user = user
@@ -60,7 +76,7 @@ class Qrcode(Entity, Base):
 
     title = Column(String)
     token = Column(String, unique=True, nullable=False)
-    created_by = Column(Integer, ForeignKey('user.id'))
+    created_by = Column(Integer, ForeignKey('catho_user.id'))
     start_time = Column(DateTime)
     end_time = Column(DateTime)
 
