@@ -65,9 +65,7 @@ def get_signature_by_token(session, token):
 
 
 def get_list_student(session, token):
-    print(session.query(Signature).filter(Signature.token == token).all())
     informations = copy.deepcopy(session.query(Signature).filter(Signature.token == token).all())
-    print(informations)
     course = session.query(Qrcode).filter(Qrcode.token == token).all()[0]
     user = session.query(CathoUser).filter(CathoUser.id == course.created_by).all()[0]
     for info in informations:
