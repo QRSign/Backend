@@ -12,12 +12,12 @@
     <table>
 
         <tr>
-          <th><strong>Cours:</strong>{{ cours.title }} </th>
-          <th><strong>Date:</strong>{{ cours.start_time }} </th>
+          <th><strong>Cours:</strong>{{ course.title }} </th>
+          <th><strong>Date:</strong>{{ course.start_time }} </th>
         </tr>
         <tr>
-            <th><strong>Professeur:</strong>{{ users.first_name + " " + users.last_name  }}  </th>
-            <th><strong></strong>{{ cours.end_time }} </th>
+            <th><strong>Professeur:</strong>{{ user.first_name + " " + user.last_name  }}  </th>
+            <th><strong></strong>{{ course.end_time }} </th>
           </tr>
 
        </table>
@@ -32,8 +32,8 @@
 
   <tr>
       {% for info in informations %}
-    <td>{{ info.prenom  + " " + info.nom  }}</td>
-    <td><img src="data:Image/png;base64,{{ info.sign }}"/></td>
+    <td>{{ info.first_name  + " " + info.last_name  }}</td>
+    <td><img src="data:Image/png;base64,{{ info.signature }}"/></td>
        {% endfor %}
   </tr>
   </table>
