@@ -5,7 +5,14 @@ table {
 }
 
 td, th {
-  border: 1px solid #dddddd;
+  border: 1px solid #2F4F4F;
   text-align: left;
   padding: 8px;
+}
+th.pos{
+    text-align: center;
+}
+h1{
+    font-family: arial, sans-serif;
+    text-align: center
 }
