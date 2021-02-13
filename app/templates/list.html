@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <title>List</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='list.css') }}">
+</head>
+<body>
+<div class="container">
+    <table>
+
+        <tr>
+          <th><strong>Cours:</strong>{{ cours.title }} </th>
+          <th><strong>Date:</strong>{{ cours.start_time }} </th>
+        </tr>
+        <tr>
+            <th><strong>Professeur:</strong>{{ users.first_name + " " + users.last_name  }}  </th>
+            <th><strong></strong>{{ cours.end_time }} </th>
+          </tr>
+
+       </table>
+</div>
+<br>
+<div class="container">
+    <table>
+  <tr>
+    <th>Prénom et Nom</th>
+    <th>Signature</th>
+  </tr>
+
+  <tr>
+      {% for info in informations %}
+    <td>{{ info.prenom  + " " + info.nom  }}</td>
+    <td><img src="data:Image/png;base64,{{ info.sign }}"/></td>
+       {% endfor %}
+  </tr>
+  </table>
+</div>
+</body>
+</html>

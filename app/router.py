@@ -1,11 +1,14 @@
-from flask import Flask, request
+import PIL
+import pdfkit
+from flask import Flask, request, render_template, make_response, url_for
 from .dao.entities.entity import Session, engine, Base
 from .dao.entities.qrcode import qrcode_get_method, qrcode_post_method, qrcode_patch_method, \
-    qrcode_delete_method, qrcode_get_method_by_token, qrcodes_get_method
+    qrcode_delete_method, qrcode_get_method_by_token, qrcodes_get_method, Qrcode
 from .dao.entities.signature import signature_get_method, signature_post_method, signature_patch_method, \
-    signature_delete_method, get_signature_by_token
-from .dao.entities.catho_user import get_password, add_user, get_users_method
+    signature_delete_method, get_signature_by_token, Signature
+from .dao.entities.catho_user import get_password, add_user, get_users_method, CathoUser
 from flask_cors import CORS
+from PIL import Image
 
 app = Flask(__name__)
 CORS(app)
@@ -13,6 +16,27 @@ CORS(app)
 session = Session()
 Base.metadata.create_all(engine)
 
+
+@app.route('/list/<token>', methods=['POST', 'GET'])
+def pdf_list(token):
+
+    informations = session.query(Signature).filter(Signature.token == token).all()
+    cours = session.query(Qrcode).filter(Qrcode.token == token).all()[0]
+    users= session.query(CathoUser).filter(CathoUser.id == cours.user).all()[0]
+    for info in informations:
+     info.signature = info.signature.decode()
+
+
+    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+
+    rendered = render_template('list.html', informations=informations, cours=cours, users=users)
+    pdf = pdfkit.from_string(rendered, False, configuration=config)
+
+    response = make_response(pdf)
+    response.headers['Content-type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'atteched; filename=attendenceList.pdf'
+
+    return response
 
 @app.route('/test')
 def test_route():
