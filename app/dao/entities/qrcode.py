@@ -2,6 +2,9 @@ from flask import jsonify
 from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
 import secrets
 from datetime import datetime
+
+from sqlalchemy.orm import relationship
+
 from .catho_user import CathoUser
 from .entity import Entity, Base
 from . import signature
@@ -51,6 +54,8 @@ def qrcode_post_method(json, session):
     if not user:
         return {'message': 'User not found.'}, 404
 
+
+
     qrcode = Qrcode(title, token, user_id, start_time, end_time)
 
     session.add(qrcode)
@@ -95,15 +100,16 @@ class Qrcode(Entity, Base):
 
     title = Column(String)
     token = Column(String, unique=True, nullable=False)
-    created_by = Column(Integer, ForeignKey('catho_user.id'))
+    created_by_id = Column(Integer, ForeignKey('catho_user.id'))
+    created_by = relationship("CathoUser")
     start_time = Column(DateTime)
     end_time = Column(DateTime)
 
-    def __init__(self, title, token, created_by, start_time, end_time):
+    def __init__(self, title, token, created_by_id, start_time, end_time):
         Entity.__init__(self)
         self.title = title
         self.token = token
-        self.created_by = created_by
+        self.created_by_id = created_by_id
         self.start_time = start_time
         self.end_time = end_time
 
@@ -113,7 +119,7 @@ class Qrcode(Entity, Base):
             'id': self.id,
             'title': self.title,
             'token': self.token,
-            'user': self.created_by,
+            'user': self.created_by.serialize,
             'start_time': self.start_time,
             'end_time': self.end_time
         }
