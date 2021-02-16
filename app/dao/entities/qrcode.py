@@ -13,7 +13,8 @@ from . import signature
 def qrcodes_get_method(session):
     qrcodes = session.query(Qrcode).all()
     if not qrcodes:
-        return {'message': "QrCode not found."}, 404
+        return {'error': "QrCode not found.",
+                'message': "Aucun Qrcode disponible."}, 404
     else:
         return jsonify([x.serialize for x in qrcodes]), 200
 
@@ -21,7 +22,8 @@ def qrcodes_get_method(session):
 def qrcode_get_method(session, id):
     qrcode = session.query(Qrcode).filter(Qrcode.id == id).first()
     if not qrcode:
-        return {'message': "QrCode not found."}, 404
+        return {'error': "QrCode not found.",
+                'message': "Ce QrCode n'existe pas."}, 404
 
     return jsonify(qrcode.serialize), 200
 
@@ -29,7 +31,8 @@ def qrcode_get_method(session, id):
 def qrcode_get_method_by_token(session, token):
     signatures = session.query(Qrcode).filter(Qrcode.token == token).all()
     if not signatures:
-        return {'message': "Unknown token"}, 400
+        return {'error': "Unknown token",
+                'message': "Token inconnu."}, 400
     else:
         return jsonify(signatures[0].serialize), 200
 
@@ -40,21 +43,22 @@ def qrcode_post_method(json, session):
     user_id = json['user']
 
     if type(user_id) != int:
-        return {'message': 'Id is not an integer'}, 400
+        return {'error': 'Id is not an integer',
+                'message': "Le formulaire n\'a pas été correctement rempli."}, 400
 
     try:
         start_time = datetime.strptime(json['start_time'], "%Y-%m-%d %H:%M")
         end_time = datetime.strptime(json['end_time'], "%Y-%m-%d %H:%M")
     except Exception as e:
         print(e)
-        return {'message': 'Wrong date format'}, 400
+        return {'error': 'Wrong date format',
+                'message': "Format de la date incorrect."}, 400
 
     user = session.query(CathoUser).get(user_id)
 
     if not user:
-        return {'message': 'User not found.'}, 404
-
-
+        return {'error': 'User not found.',
+                'message': "Le formulaire n\'a pas été correctement rempli."}, 404
 
     qrcode = Qrcode(title, token, user_id, start_time, end_time)
 
@@ -72,7 +76,8 @@ def qrcode_patch_method(json, session, id):
     qrcode = session.query(Qrcode).get(id)
 
     if not qrcode:
-        return {'message': "QrCode not found."}, 404
+        return {'error': "QrCode not found.",
+                'message': ""}, 404
 
     qrcode.title = title
     qrcode.user = user

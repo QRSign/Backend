@@ -10,7 +10,8 @@ from . import qrcode
 def signatures_get_method(session):
     signature = session.query(Signature).all()
     if not signature:
-        return {'message': "QrCode not found."}, 404
+        return {'error': "QrCode not found.",
+                'message': "Token inconnu."}, 404
     else:
         return jsonify([x.serialize for x in signature]), 200
 

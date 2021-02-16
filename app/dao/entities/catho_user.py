@@ -15,7 +15,8 @@ def check_password(raw_password, enc_password):
 def get_users_method(json, session):
     users = session.query(CathoUser).all()
     if not users:
-        return {'message': "Users not found."}, 404
+        return {'error': "Users not found.",
+                'message': ""}, 404
     else:
         return jsonify([x.serialize for x in users]), 200
 
@@ -28,7 +29,8 @@ def get_password(json, session):
     print(check_password(password, user.password))
 
     if not user or not check_password(password, user.password):
-        return {'message': "Wrong credential"}, 400
+        return {'error': "Wrong credential",
+                'message': "L\'adresse mail ou le mot de passe est invalide."}, 400
     elif check_password(password, user.password):
         return jsonify(user.serialize), 200
 
@@ -40,7 +42,8 @@ def add_user(json, session):
     password = json['password']
     mail_check = session.query(CathoUser.mail).filter(CathoUser.mail == mail).first()
     if mail_check:
-        return {'message': "CathoUser already exist"}, 400
+        return {'error': "CathoUser already exist",
+                'message': "Ce mail a déjà été utilisé."}, 400
 
     user = CathoUser(first_name, last_name, mail, password)
 
