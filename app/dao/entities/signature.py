@@ -55,6 +55,7 @@ def signature_patch_method(json, session, id):
 def signature_delete_method(session, id):
     signature = session.query(Signature).get(id)
     session.delete(signature)
+    session.commit()
 
     return jsonify(signature.serialize)
 
