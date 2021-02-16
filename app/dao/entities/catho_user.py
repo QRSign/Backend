@@ -24,7 +24,7 @@ def get_users_method(json, session):
 def get_password(json, session):
     mail = json['mail']
     password = json['password']
-    user = session.query(CathoUser).filter(CathoUser.mail == mail).all()[0]
+    user = session.query(CathoUser).filter(CathoUser.mail == mail).all()
 
     if not user:
         return {'error': "Wrong credential",
