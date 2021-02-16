@@ -24,11 +24,15 @@ def get_users_method(json, session):
 def get_password(json, session):
     mail = json['mail']
     password = json['password']
-    user = session.query(CathoUser).filter(CathoUser.mail == mail).all()[0]
+    user = session.query(CathoUser).filter(CathoUser.mail == mail).all()
 
-    print(check_password(password, user.password))
+    if not user:
+        return {'error': "Wrong credential",
+                'message': "L\'adresse mail ou le mot de passe est invalide."}, 400
 
-    if not user or not check_password(password, user.password):
+    user = user[0]
+
+    if not check_password(password, user.password):
         return {'error': "Wrong credential",
                 'message': "L\'adresse mail ou le mot de passe est invalide."}, 400
     elif check_password(password, user.password):
