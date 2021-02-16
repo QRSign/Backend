@@ -2,9 +2,9 @@ from flask import jsonify
 from sqlalchemy import Column, String, Integer, ForeignKey, DateTime
 import secrets
 from datetime import datetime
-
 from .catho_user import CathoUser
 from .entity import Entity, Base
+from . import signature
 
 
 def qrcodes_get_method(session):
@@ -80,10 +80,14 @@ def qrcode_patch_method(json, session, id):
 
 
 def qrcode_delete_method(session, id):
-    spot = session.query(Qrcode).get(id)
-    session.delete(spot)
+    qrcode = session.query(Qrcode).get(id)
+    signatures = session.query(signature.Signature).filter(signature.Signature.token == qrcode.token).all()
+    for sign in signatures:
+        session.delete(sign)
 
-    return jsonify(spot.serialize)
+    session.delete(qrcode)
+
+    return jsonify(qrcode.serialize)
 
 
 class Qrcode(Entity, Base):

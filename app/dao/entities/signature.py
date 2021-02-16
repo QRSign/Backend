@@ -4,7 +4,7 @@ from flask import jsonify, render_template, make_response
 from sqlalchemy import Column, String, ForeignKey, LargeBinary
 from .catho_user import CathoUser
 from .entity import Entity, Base
-from .qrcode import Qrcode
+from . import qrcode
 
 
 def signatures_get_method(session):
@@ -66,7 +66,7 @@ def get_signature_by_token(session, token):
 
 def get_list_student(session, token):
     informations = copy.deepcopy(session.query(Signature).filter(Signature.token == token).all())
-    course = session.query(Qrcode).filter(Qrcode.token == token).all()[0]
+    course = session.query(qrcode.Qrcode).filter(qrcode.Qrcode.token == token).all()[0]
     user = session.query(CathoUser).filter(CathoUser.id == course.created_by).all()[0]
     for info in informations:
         info.signature = info.signature.decode()
