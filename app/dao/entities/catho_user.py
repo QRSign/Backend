@@ -22,7 +22,7 @@ def get_users_method(json, session):
 
 
 def get_password(json, session):
-    mail = json['mail']
+    mail = json['mail'].lower()
     password = json['password']
     user = session.query(CathoUser).filter(CathoUser.mail == mail).all()
 
@@ -42,7 +42,7 @@ def get_password(json, session):
 def add_user(json, session):
     last_name = json['last_name']
     first_name = json['first_name']
-    mail = json['mail']
+    mail = json['mail'].lower()
     password = json['password']
     mail_check = session.query(CathoUser.mail).filter(CathoUser.mail == mail).first()
     if mail_check:
